@@ -30,7 +30,6 @@ public class menuControl {
 
     @FXML
     private void startSingleGame(ActionEvent event) throws IOException {
-        System.out.println("You clicked me!");
         new gameWindow();        
     }
 }

@@ -15,9 +15,8 @@ public class Main extends Application {
     private Stage primaryStage;
     private FlowPane rootLayout;
 
-    private menuControl menuC;
-    private mainControl mainC;
-    
+    //private menuControl menuC;
+    //private mainControl mainC;
     
     @Override
     public void start(Stage primaryStage) 
@@ -29,8 +28,8 @@ public class Main extends Application {
             loader.setLocation(Main.class.getResource("MainMenu.fxml"));
             rootLayout = (FlowPane) loader.load();
             Scene scene = new Scene(rootLayout);
-            primaryStage.setScene(scene);
-            primaryStage.show();
+            this.primaryStage.setScene(scene);
+            this.primaryStage.show();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -38,5 +37,5 @@ public class Main extends Application {
     
 	public static void main(String[] args) {
 		launch(args);
-	}
+	}	
 }

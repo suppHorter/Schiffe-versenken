@@ -33,19 +33,19 @@ public class GameField {
 		switch(stat)
 		{
 			case 0:
-				FileInputStream inputstream = new FileInputStream("C:/Users/Maximilian/Desktop/Programmieren/Eclipse/Schiffe_versenken/images/water.png"); 
+				FileInputStream inputstream = new FileInputStream(System.getProperty("user.home") + "/Desktop" + "/Schiffe-versenken/images/water.png");
 				this.imgStatus = new Image(inputstream);
 			break;
 			case 1: 
-				FileInputStream inputstream1 = new FileInputStream("C:/Users/Maximilian/Desktop/Programmieren/Eclipse/Schiffe_versenken/images/Tile_Mid.png");
+				FileInputStream inputstream1 = new FileInputStream(System.getProperty("user.home") + "/Desktop" + "/Schiffe-versenken/images/Tile_Mid.png");
 				this.imgStatus = new Image(inputstream1);
 			break;
 			case 2:
-				FileInputStream inputstream2 = new FileInputStream("C:/Users/Maximilian/Desktop/Programmieren/Eclipse/Schiffe_versenken/images/water.png");
+				FileInputStream inputstream2 = new FileInputStream(System.getProperty("user.home") + "/Desktop" + "/Schiffe-versenken-master/images/water.png");
 				this.imgStatus = new Image(inputstream2);
 			break;
 			case 3:
-				FileInputStream inputstream3 = new FileInputStream("C:/Users/Maximilian/Desktop/Programmieren/Eclipse/Schiffe_versenken/images/water.png");
+				FileInputStream inputstream3 = new FileInputStream(System.getProperty("user.home") + "/Desktop" + "/Schiffe-versenken-master/images/water.png");
 				this.imgStatus = new Image(inputstream3);
 			break;
 		}

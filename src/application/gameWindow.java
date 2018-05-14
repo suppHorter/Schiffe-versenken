@@ -33,7 +33,8 @@ public class gameWindow extends Stage {
                     case LEFT:  game_Cont.moveShipLeft(); break;
                     case RIGHT: game_Cont.moveShipRight(); break;
                 }
-                //System.out.println("CurrShip.länge: "+game_Cont.getCurrShip().getLength());
+                //System.out.println("CurrShip.lï¿½nge: "+game_Cont.getCurrShip().getLength());
+
 	    		} catch (FileNotFoundException e) {
 	    			// TODO Auto-generated catch block
 	    			e.printStackTrace();

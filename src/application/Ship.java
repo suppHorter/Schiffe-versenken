@@ -1,7 +1,9 @@
 package application;
 
+import java.util.ArrayList;
+
 public class Ship {
-	//type: 0=Schlachtschiff; 1 = Kreuzer; 2 = Zerstörer, 3 = UBoot
+	//type: 0=Schlachtschiff; 1 = Kreuzer; 2 = Zerstï¿½rer, 3 = UBoot
 	private int type;
 	private int length;
 	private GameField[] gfUsed;
@@ -10,7 +12,8 @@ public class Ship {
 	private static int currAnzZerst=0;
 	private static int currAnzKreuz=0;
 	private static int currAnzUBoot=0;
-	
+
+
 	Ship(int type)
 	{
 		this.type = type;
@@ -38,8 +41,7 @@ public class Ship {
 				currAnzUBoot++;
 				break;
 		}
-		
-	}		
+	}
 	
 	public int getCurrAnzSchlacht()
 	{
@@ -87,5 +89,4 @@ public class Ship {
 	{
 		return this.length;
 	}
-	
 }

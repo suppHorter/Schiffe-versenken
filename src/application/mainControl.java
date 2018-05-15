@@ -206,11 +206,9 @@ public class mainControl {
                  * nach rechts: x+1
                  * */
                 gpTemp[i].setKoords(gpTemp[i].getXKoord(), gpTemp[i].getYKoord() - 1);
-                //switchStats(gpTemp[i].getXKoord(), gpTemp[i].getYKoord(), gpTemp[i].getXKoord(), gpTemp[i].getYKoord() + 1);
             }
             this.currShip.setUsedGameFields(gpTemp);
             renderField();
-            //this.currShip.viewUsedGameFields();
             printShipArr();
         } else {
             //TODO: Error abfangen
@@ -227,7 +225,6 @@ public class mainControl {
         if (gpTemp[gpTemp.length - 1].getYKoord() != 9) {
             for (int i = this.currShip.getLength() - 1; i >= 0; i--) {
                 gpTemp[i].setKoords(gpTemp[i].getXKoord(), gpTemp[i].getYKoord() + 1);
-                switchStats(gpTemp[i].getXKoord(), gpTemp[i].getYKoord(), gpTemp[i].getXKoord(), gpTemp[i].getYKoord() - 1);
             }
             this.currShip.setUsedGameFields(gpTemp);
             //this.currShip.viewUsedGameFields();
@@ -247,14 +244,9 @@ public class mainControl {
 
         if (gpTemp[0].getXKoord() != 0) {
             for (int i = 0; i < this.currShip.getLength(); i++) {
-
                 gpTemp[i].setKoords(gpTemp[i].getXKoord() - 1, gpTemp[i].getYKoord());
-                this.gfPlayer[gpTemp[i].getXKoord()][gpTemp[i].getYKoord()].setStatus(1);
-                //switchStats(gpTemp[i].getXKoord(),gpTemp[i].getYKoord(),gpTemp[i].getXKoord()+1,gpTemp[i].getYKoord());
-
             }
             this.currShip.setUsedGameFields(gpTemp);
-            //this.currShip.viewUsedGameFields();
             renderField();
             printShipArr();
         } else {
@@ -267,22 +259,17 @@ public class mainControl {
         //Schiff Position zwischenspeichern
         GameField[] gpTemp = new GameField[this.currShip.getLength()];
         gpTemp = this.currShip.getUsedGameFields();
-        //showStats(this.currShip);
-
         if (gpTemp[gpTemp.length - 1].getXKoord() != 9) {
             for (int i = this.currShip.getLength() - 1; i >= 0; i--) {
                 gpTemp[i].setKoords(gpTemp[i].getXKoord() + 1, (gpTemp[i].getYKoord()));
-                //switchStats(gpTemp[i].getXKoord(),gpTemp[i].getYKoord(),gpTemp[i].getXKoord()-1,gpTemp[i].getYKoord());
             }
             this.currShip.setUsedGameFields(gpTemp);
-            //this.currShip.viewUsedGameFields();
             renderField();
             printShipArr();
         } else {
             //TODO: Error abfangen
             System.out.println("Schiff befindet sich ganz rechts!");
         }
-        //gpTemp in player_Field schreiben
     }
 
     private void showStats(Ship ship) {
@@ -295,12 +282,18 @@ public class mainControl {
         }
     }
 
-    public void rotateShipRight() {
-
+    public void rotateShipRight() throws FileNotFoundException {
+        GameField[] gpTemp = new GameField[currShip.getLength()];
+        gpTemp = this.currShip.getUsedGameFields();
+        for (int i = this.currShip.getLength() - 1; i >= 0; i--) {
+            gpTemp[i].setKoords(gpTemp[i].getYKoord() , (gpTemp[i].getXKoord()));
+        }
+        this.currShip.setUsedGameFields(gpTemp);
+        renderField();
     }
 
     public void rotateShipLeft() {
-
+        //Nicht benötigt
     }
 
     private void switchStats(int x1, int y1, int x2, int y2) throws FileNotFoundException {
@@ -314,19 +307,23 @@ public class mainControl {
         initGame();
         GameField currShipCoords[] = currShip.getUsedGameFields();
         ArrayList<GameField> usedCoords = new ArrayList<>();
-
+        //Benutzten Koord befüllt
         for (int i = 0; i < allShips.size(); i++) {
             Ship ship = allShips.get(i);
             GameField [] shipUsedGameFields = ship.getUsedGameFields();
             for(int j = 0; j < shipUsedGameFields.length; j++) {
+                shipUsedGameFields[j].setStatus(ImageStatus.SCHIFF_MITTE_HOR);
                 usedCoords.add(shipUsedGameFields[j]);
-                usedCoords.get(j).setStatus(1);
-                this.player_field.add(new ImageView(usedCoords.get(j).getImage()), usedCoords.get(j).getXKoord(), usedCoords.get(j).getYKoord());
             }
         }
+        //Momentanes Schiff anzeigen
         for (int i = 0; i < currShipCoords.length; i++) {
-            currShipCoords[i].setStatus(1);
+            currShipCoords[i].setStatus(ImageStatus.CURR_MITTE_HOR);
             this.player_field.add(new ImageView(currShipCoords[i].getImage()), currShipCoords[i].getXKoord(), currShipCoords[i].getYKoord());
+        }
+
+        for (int i = 0; i < usedCoords.size(); i++){
+            this.player_field.add(new ImageView(usedCoords.get(i).getImage()), usedCoords.get(i).getXKoord(), usedCoords.get(i).getYKoord());
         }
     }
 
@@ -345,7 +342,7 @@ public class mainControl {
 
         for (int i = 0; i < length; i++) {
             //Schiff in Array deklarieren
-            gfPlayer[0][i].setStatus(1);
+            gfPlayer[0][i].setStatus(ImageStatus.CURR_MITTE_VER);
             //GameFelder an ship binden
             gfTemp[i] = gfPlayer[0][i];
             //Bilder in player_field anpassen
@@ -353,7 +350,6 @@ public class mainControl {
         }
 
         shipId.setUsedGameFields(gfTemp);
-        //shipId.viewUsedGameFields();
     }
 
     public void initGame() throws FileNotFoundException {

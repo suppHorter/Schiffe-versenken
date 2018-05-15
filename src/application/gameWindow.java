@@ -32,6 +32,7 @@ public class gameWindow extends Stage {
                     case DOWN:  game_Cont.moveShipDown(); break;
                     case LEFT:  game_Cont.moveShipLeft(); break;
                     case RIGHT: game_Cont.moveShipRight(); break;
+                    case R: game_Cont.rotateShipRight(); break;
                 }
                 //System.out.println("CurrShip.l�nge: "+game_Cont.getCurrShip().getLength());
 

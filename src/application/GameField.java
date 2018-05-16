@@ -4,11 +4,12 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 
 public class GameField {
 	private int xKoords;
 	private int yKoords;
-	
+	ImageView imageView;
 	Image imgStatus;
 	//Status 
 	//0 = Wasser,
@@ -25,7 +26,11 @@ public class GameField {
 	{
 		return imgStatus;
 	}
-	
+
+	public ImageView getImageView() {
+		return imageView;
+	}
+
 	public void setStatus(ImageStatus stat) throws FileNotFoundException
 	{
 		this.status = stat;
@@ -41,7 +46,7 @@ public class GameField {
 				this.imgStatus = new Image(inputstream1);
 			break;
 			case SCHIFF_MITTE_VER:
-				FileInputStream inputstream2 = new FileInputStream(System.getProperty("user.dir") + "/images/Tile_Ship_Mid.png");
+				FileInputStream inputstream2 = new FileInputStream(System.getProperty("user.dir") + "/images/Tile_Ship_Mid_Ver.png");
 				this.imgStatus = new Image(inputstream2);
 			break;
 			case CURR_MITTE_HOR:
@@ -49,7 +54,7 @@ public class GameField {
 				this.imgStatus = new Image(inputstream3);
 			break;
 			case CURR_MITTE_VER:
-				FileInputStream inputstream4 = new FileInputStream(System.getProperty("user.dir") + "/images/Tile_Select_Mid.png");
+				FileInputStream inputstream4 = new FileInputStream(System.getProperty("user.dir") + "/images/Tile_Select_Mid_Ver.png");
 				this.imgStatus = new Image(inputstream4);
 			break;
 			case DESTR_MITTE_HOR:
@@ -57,7 +62,7 @@ public class GameField {
 				this.imgStatus = new Image(inputstream5);
 				break;
 			case DESTR_MITTE_VER:
-				FileInputStream inputstream6 = new FileInputStream(System.getProperty("user.dir") + "/images/Tile_Destroyed_Mid.png");
+				FileInputStream inputstream6 = new FileInputStream(System.getProperty("user.dir") + "/images/Tile_Destroyed_Mid_Ver.png");
 				this.imgStatus = new Image(inputstream6);
 				break;
 			case NOPE:

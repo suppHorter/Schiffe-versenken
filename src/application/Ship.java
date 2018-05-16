@@ -8,10 +8,7 @@ public class Ship {
 	private int length;
 	private GameField[] gfUsed;
 	private int maxAnz;
-	private static int currAnzSchlacht=0;
-	private static int currAnzZerst=0;
-	private static int currAnzKreuz=0;
-	private static int currAnzUBoot=0;
+	private int dir = 1; //-1 horizontal 1 vertikal
 
 
 	Ship(int type)
@@ -23,51 +20,39 @@ public class Ship {
 				//Schlachtschiff 
 				this.length = 5; 
 				this.maxAnz = 1;
-				currAnzSchlacht++;
 				break;
 			case 1: 
 				this.length = 4; 
 				this.maxAnz = 2;
-				currAnzKreuz++;
 				break;
 			case 2: 
 				this.length = 3; 
 				this.maxAnz = 3;
-				currAnzZerst++;
 				break;
 			case 3: 
 				this.length = 2; 
 				this.maxAnz = 4;
-				currAnzUBoot++;
 				break;
 		}
 	}
-	
-	public int getCurrAnzSchlacht()
-	{
-		return this.currAnzSchlacht;
+
+	public int getMaxAnz() {
+		return maxAnz;
 	}
-	
-	public int getCurrAnzKreuz()
-	{
-		return this.currAnzKreuz;
-	}
-	
-	public int getCurrAnzZerst()
-	{
-		return this.currAnzZerst;
-	}
-	
-	public int getCurrAnzUBoot()
-	{
-		return this.currAnzUBoot;
-	}
-	
+
 	public GameField[] getUsedGameFields()
 	{
 		return this.gfUsed;
 	}
-	
+
+	public void setDir(int dir) {
+		this.dir = dir;
+	}
+
+	public int getDir() {
+		return dir;
+	}
+
 	public void viewUsedGameFields()
 	{
 		for(int i=0;i<this.gfUsed.length;i++){

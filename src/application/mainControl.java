@@ -70,9 +70,17 @@ public class mainControl {
 
     @FXML
     private Button btn_placeShip;
+    private static boolean shipCanBeSet;
+    private static ArrayList<GameField> usedCoords = new ArrayList<>();
 
     private GameField[][] gfPlayer = new GameField[10][10];
     private GameField[][] gfPC = new GameField[10][10];
+
+    //Speichern wieviele Schiffe von welchem Typ vorhanden sind
+    private static int currAnzSchlacht = 0;
+    private static int currAnzZerst = 0;
+    private static int currAnzKreuz = 0;
+    private static int currAnzUBoot = 0;
 
     //Brauche hier noch 4 Arrays mit jew. Schiffen
 
@@ -99,59 +107,97 @@ public class mainControl {
     }
 
     @FXML
-    void placeShip(ActionEvent event) {
-        btn_ship1.setVisible(true);
-        btn_ship2.setVisible(true);
-        btn_ship3.setVisible(true);
-        btn_ship4.setVisible(true);
-        allShips.add(currShip);
+    void placeShip(ActionEvent event) throws FileNotFoundException {
+        if (shipCanBeSet) {
+            allShips.add(currShip);
+            setVisibilityOfShipButtons();
+            //Benutzten Koord befüllt
+            GameField[] shipUsedGameFields = currShip.getUsedGameFields();
+            for (int j = 0; j < shipUsedGameFields.length; j++) {
+                if (currShip.getDir() == -1) {
+                    shipUsedGameFields[j].setStatus(ImageStatus.SCHIFF_MITTE_HOR);
+                } else {
+                    shipUsedGameFields[j].setStatus(ImageStatus.SCHIFF_MITTE_VER);
+                }
+                this.player_field.add(new ImageView(shipUsedGameFields[j].getImage()), shipUsedGameFields[j].getXKoord(), shipUsedGameFields[j].getYKoord());
+                usedCoords.add(shipUsedGameFields[j]);
+            }
+        }
+    }
+
+
+    //Blendet Schiffburtons aus falls Max Anzahl erreicht wurde
+    void setVisibilityOfShipButtons() {
+        btn_ship1.setVisible(false);
+        btn_ship2.setVisible(false);
+        btn_ship3.setVisible(false);
+        btn_ship4.setVisible(false);
+        switch (currShip.getType()) {
+            case 0:
+                currAnzSchlacht++;
+                break;
+            case 1:
+                currAnzKreuz++;
+                break;
+            case 2:
+                currAnzZerst++;
+                break;
+            case 3:
+                currAnzUBoot++;
+                break;
+        }
+        if (currAnzSchlacht < 1) {
+            btn_ship1.setVisible(true);
+        }
+        if (currAnzKreuz < 2) {
+            btn_ship2.setVisible(true);
+        }
+        if (currAnzZerst < 3) {
+            btn_ship3.setVisible(true);
+        }
+        if (currAnzUBoot < 4) {
+            btn_ship4.setVisible(true);
+        }
     }
 
     @FXML
     void setShip1(ActionEvent event) throws FileNotFoundException {
         //Schlachschiff
         Ship ship1 = new Ship(0);
-        //System.out.println(ship.getCurrAnzSchlacht());
-        battShipArr[ship1.getCurrAnzSchlacht() - 1] = ship1;
-        setShip(ship1.getLength(), battShipArr[ship1.getCurrAnzSchlacht() - 1]);
-        System.out.println("Schlachtschiff");
+        this.currShip = ship1;
+        setShip(ship1.getLength(), currShip);
         hideButtons(0);
-        this.currShip = battShipArr[ship1.getCurrAnzSchlacht() - 1];
+        renderField();
     }
 
     @FXML
     void setShip2(ActionEvent event) throws FileNotFoundException {
         //Kreuzer
         Ship ship2 = new Ship(1);
-        kreuzerArr[ship2.getCurrAnzKreuz() - 1] = ship2;
-        setShip(ship2.getLength(), kreuzerArr[ship2.getCurrAnzKreuz() - 1]);
-        System.out.println("Kreuzer");
+        this.currShip = ship2;
+        setShip(ship2.getLength(), currShip);
         hideButtons(1);
-        this.currShip = kreuzerArr[ship2.getCurrAnzKreuz() - 1];
+        renderField();
     }
 
     @FXML
     void setShip3(ActionEvent event) throws FileNotFoundException {
-        //Zerst�rer
+        //Zerstörer
         Ship ship3 = new Ship(2);
-        zerstArr[ship3.getCurrAnzZerst() - 1] = ship3;
-        setShip(ship3.getLength(), zerstArr[ship3.getCurrAnzZerst() - 1]);
-        System.out.println("Zerst�rer");
+        this.currShip = ship3;
+        setShip(ship3.getLength(), currShip);
         hideButtons(2);
-        this.currShip = zerstArr[ship3.getCurrAnzZerst() - 1];
+        renderField();
     }
 
     @FXML
     void setShip4(ActionEvent event) throws FileNotFoundException {
         //U-Boot
         Ship ship4 = new Ship(3);
-        System.out.println(ship4.getCurrAnzUBoot());
-        ubootArr[ship4.getCurrAnzUBoot() - 1] = ship4;
-        setShip(ship4.getLength(), ubootArr[ship4.getCurrAnzUBoot() - 1]);
-        System.out.println("U-Boot");
-        //Buttons ausblenden und navigieren erm�glichen
+        currShip = ship4;
+        setShip(ship4.getLength(), currShip);
         hideButtons(3);
-        this.currShip = ubootArr[ship4.getCurrAnzUBoot() - 1];
+        renderField();
     }
 
     public void hideButtons(int initButton) {
@@ -186,30 +232,17 @@ public class mainControl {
     public void moveShipUp() throws FileNotFoundException {
         //Schiff Position zwischenspeichern
         GameField[] gpTemp = new GameField[this.currShip.getLength()];
-        //Temp mit Feldern des ausgew. Schiffes f�llen
+        //Temp mit Feldern des ausgew. Schiffes füllen
         gpTemp = this.currShip.getUsedGameFields();
-        //showStats(this.currShip);
 
         //TODO: Pr�fung ob an anderem Schiff?
-        //Pr�fung ob an Grenze
+        //Prüfung ob an Grenze
         if (gpTemp[0].getYKoord() != 0) {
-            //setWater(gpTemp[gpTemp.length-1].getXKoord(),gpTemp[gpTemp.length-1].getYKoord());
-            //F�r L�nge des Schiffes
             for (int i = 0; i < this.currShip.getLength(); i++) {
-                //Feld mit Wasser �berschreiben
-                //setWater(gpTemp[i].getXKoord(),gpTemp[i].getYKoord());
-                //Felder in Temp. var in jew. Koord erh�hen
-                /*
-                 * nach oben: y-1
-                 * nach unten: y+1
-                 * nach links: x-1
-                 * nach rechts: x+1
-                 * */
                 gpTemp[i].setKoords(gpTemp[i].getXKoord(), gpTemp[i].getYKoord() - 1);
             }
             this.currShip.setUsedGameFields(gpTemp);
             renderField();
-            printShipArr();
         } else {
             //TODO: Error abfangen
             System.out.println("Schiff befindet sich ganz oben!");
@@ -221,15 +254,12 @@ public class mainControl {
         //Schiff Position zwischenspeichern
         GameField[] gpTemp = new GameField[this.currShip.getLength()];
         gpTemp = this.currShip.getUsedGameFields();
-        //showStats(this.currShip);
         if (gpTemp[gpTemp.length - 1].getYKoord() != 9) {
             for (int i = this.currShip.getLength() - 1; i >= 0; i--) {
                 gpTemp[i].setKoords(gpTemp[i].getXKoord(), gpTemp[i].getYKoord() + 1);
             }
             this.currShip.setUsedGameFields(gpTemp);
-            //this.currShip.viewUsedGameFields();
             renderField();
-            printShipArr();
         } else {
             //TODO: Error abfangen
             System.out.println("Schiff befindet sich ganz unten!");
@@ -248,7 +278,6 @@ public class mainControl {
             }
             this.currShip.setUsedGameFields(gpTemp);
             renderField();
-            printShipArr();
         } else {
             //TODO: Error abfangen
             System.out.println("Schiff befindet sich ganz links!");
@@ -265,7 +294,6 @@ public class mainControl {
             }
             this.currShip.setUsedGameFields(gpTemp);
             renderField();
-            printShipArr();
         } else {
             //TODO: Error abfangen
             System.out.println("Schiff befindet sich ganz rechts!");
@@ -282,18 +310,15 @@ public class mainControl {
         }
     }
 
-    public void rotateShipRight() throws FileNotFoundException {
+    public void rotateShip() throws FileNotFoundException {
+        currShip.setDir(currShip.getDir() * -1);
         GameField[] gpTemp = new GameField[currShip.getLength()];
         gpTemp = this.currShip.getUsedGameFields();
         for (int i = this.currShip.getLength() - 1; i >= 0; i--) {
-            gpTemp[i].setKoords(gpTemp[i].getYKoord() , (gpTemp[i].getXKoord()));
+            gpTemp[i].setKoords(gpTemp[i].getYKoord(), (gpTemp[i].getXKoord()));
         }
         this.currShip.setUsedGameFields(gpTemp);
         renderField();
-    }
-
-    public void rotateShipLeft() {
-        //Nicht benötigt
     }
 
     private void switchStats(int x1, int y1, int x2, int y2) throws FileNotFoundException {
@@ -304,27 +329,57 @@ public class mainControl {
     }
 
     private void renderField() throws FileNotFoundException {
-        initGame();
+        refreshGame();
         GameField currShipCoords[] = currShip.getUsedGameFields();
-        ArrayList<GameField> usedCoords = new ArrayList<>();
-        //Benutzten Koord befüllt
-        for (int i = 0; i < allShips.size(); i++) {
-            Ship ship = allShips.get(i);
-            GameField [] shipUsedGameFields = ship.getUsedGameFields();
-            for(int j = 0; j < shipUsedGameFields.length; j++) {
-                shipUsedGameFields[j].setStatus(ImageStatus.SCHIFF_MITTE_HOR);
-                usedCoords.add(shipUsedGameFields[j]);
+        for (int i = 0; i < usedCoords.size(); i++) {
+            this.player_field.add(new ImageView(usedCoords.get(i).getImage()), usedCoords.get(i).getXKoord(), usedCoords.get(i).getYKoord());
+            gfPlayer[usedCoords.get(i).getXKoord()][usedCoords.get(i).getYKoord()].setStatus(usedCoords.get(i).getStatus());
+        }
+        printShipArr();
+        shipCanBeSet = true;
+        for (int i = 0; i < currShipCoords.length; i++) {
+            //umliegende Felder prüfen
+            if (checkAdjacentFields(currShipCoords[i])) {
+                //ausrichtung des Schiffs prüfen
+                if (currShip.getDir() == -1) {
+                    currShipCoords[i].setStatus(ImageStatus.CURR_MITTE_HOR);
+                } else {
+                    currShipCoords[i].setStatus(ImageStatus.CURR_MITTE_VER);
+                }
+                this.player_field.add(new ImageView(currShipCoords[i].getImage()), currShipCoords[i].getXKoord(), currShipCoords[i].getYKoord());
+            } else {
+                shipCanBeSet = false;
+                currShipCoords[i].setStatus(ImageStatus.NOPE);
+                this.player_field.add(new ImageView(currShipCoords[i].getImage()), currShipCoords[i].getXKoord(), currShipCoords[i].getYKoord());
             }
         }
-        //Momentanes Schiff anzeigen
-        for (int i = 0; i < currShipCoords.length; i++) {
-            currShipCoords[i].setStatus(ImageStatus.CURR_MITTE_HOR);
-            this.player_field.add(new ImageView(currShipCoords[i].getImage()), currShipCoords[i].getXKoord(), currShipCoords[i].getYKoord());
-        }
+    }
 
-        for (int i = 0; i < usedCoords.size(); i++){
-            this.player_field.add(new ImageView(usedCoords.get(i).getImage()), usedCoords.get(i).getXKoord(), usedCoords.get(i).getYKoord());
+    private boolean checkAdjacentFields(GameField shipCoords) {
+        int x_min = shipCoords.getXKoord() - 1;
+        int y_min = shipCoords.getYKoord() - 1;
+        if (x_min < 0) {
+            x_min = 0;
         }
+        if (y_min < 0) {
+            y_min = 0;
+        }
+        int x_max = shipCoords.getXKoord() + 1;
+        int y_max = shipCoords.getYKoord() + 1;
+        if (x_max > 9) {
+            x_max = 9;
+        }
+        if (y_max > 9) {
+            y_max = 9;
+        }
+        for (int x = x_min; x <= x_max; x++) {
+            for (int y = y_min; y <= y_max; y++) {
+                if (gfPlayer[x][y].getStatus() != ImageStatus.WASSER) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     private void printShipArr() {
@@ -348,12 +403,11 @@ public class mainControl {
             //Bilder in player_field anpassen
             this.player_field.add(new ImageView(gfPlayer[0][i].getImage()), 0, i);
         }
-
         shipId.setUsedGameFields(gfTemp);
     }
 
     public void initGame() throws FileNotFoundException {
-        //Spieler Felder mit Wasser f�llen
+        //Spieler Felder mit Wasser fuellen
         for (int y = 0; y < 10; y++) {
             for (int x = 0; x < 10; x++) {
                 this.gfPlayer[x][y] = new GameField();
@@ -361,12 +415,23 @@ public class mainControl {
                 this.player_field.add(new ImageView(gfPlayer[x][y].getImage()), x, y);
             }
         }
-        //PC Felder mit Wasser f�llen
+        //PC Felder mit Wasser fuellen
         for (int y = 0; y < 10; y++) {
             for (int x = 0; x < 10; x++) {
                 this.gfPC[x][y] = new GameField();
                 this.gfPC[x][y].setKoords(x, y);
                 this.pc_field.add(new ImageView(gfPC[x][y].getImage()), x, y);
+            }
+        }
+    }
+
+    public void refreshGame() throws FileNotFoundException {
+        //Spieler Felder mit Wasser fuellen
+        for (int y = 0; y < 10; y++) {
+            for (int x = 0; x < 10; x++) {
+                this.gfPlayer[x][y] = new GameField();
+                this.gfPlayer[x][y].setKoords(x, y);
+                this.player_field.add(new ImageView(gfPlayer[x][y].getImage()), x, y);
             }
         }
     }

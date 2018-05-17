@@ -65,9 +65,13 @@ public class GameField {
 				FileInputStream inputstream6 = new FileInputStream(System.getProperty("user.dir") + "/images/Tile_Destroyed_Mid_Ver.png");
 				this.imgStatus = new Image(inputstream6);
 				break;
-			case NOPE:
-				FileInputStream inputstream7 = new FileInputStream(System.getProperty("user.dir") + "/images/Tile_Select_Nope.png");
+			case NOPE_HOR:
+				FileInputStream inputstream7 = new FileInputStream(System.getProperty("user.dir") + "/images/Tile_Nope_Mid_Hor.png");
 				this.imgStatus = new Image(inputstream7);
+				break;
+			case NOPE_VER:
+				FileInputStream inputstream8 = new FileInputStream(System.getProperty("user.dir") + "/images/Tile_Nope_Mid_Ver.png");
+				this.imgStatus = new Image(inputstream8);
 				break;
 		}
 	}

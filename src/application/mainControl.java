@@ -81,6 +81,11 @@ public class mainControl {
     private static int currAnzZerst = 0;
     private static int currAnzKreuz = 0;
     private static int currAnzUBoot = 0;
+    private static final int MAX_ANZAHL_SCHLACHT = 1;
+    private static final int MAX_ANZAHL_KREUZ = 2;
+    private static final int MAX_ANZAHL_ZERST = 3;
+    private static final int MAX_ANZAHL_UBOOT = 4;
+
 
     //Brauche hier noch 4 Arrays mit jew. Schiffen
 
@@ -110,6 +115,20 @@ public class mainControl {
     void placeShip(ActionEvent event) throws FileNotFoundException {
         if (shipCanBeSet) {
             allShips.add(currShip);
+            switch (currShip.getType()) {
+                case 0:
+                    currAnzSchlacht++;
+                    break;
+                case 1:
+                    currAnzKreuz++;
+                    break;
+                case 2:
+                    currAnzZerst++;
+                    break;
+                case 3:
+                    currAnzUBoot++;
+                    break;
+            }
             setVisibilityOfShipButtons();
             //Benutzten Koord befüllt
             GameField[] shipUsedGameFields = currShip.getUsedGameFields();
@@ -132,30 +151,17 @@ public class mainControl {
         btn_ship2.setVisible(false);
         btn_ship3.setVisible(false);
         btn_ship4.setVisible(false);
-        switch (currShip.getType()) {
-            case 0:
-                currAnzSchlacht++;
-                break;
-            case 1:
-                currAnzKreuz++;
-                break;
-            case 2:
-                currAnzZerst++;
-                break;
-            case 3:
-                currAnzUBoot++;
-                break;
-        }
-        if (currAnzSchlacht < 1) {
+
+        if (currAnzSchlacht < MAX_ANZAHL_SCHLACHT) {
             btn_ship1.setVisible(true);
         }
-        if (currAnzKreuz < 2) {
+        if (currAnzKreuz < MAX_ANZAHL_KREUZ) {
             btn_ship2.setVisible(true);
         }
-        if (currAnzZerst < 3) {
+        if (currAnzZerst < MAX_ANZAHL_ZERST) {
             btn_ship3.setVisible(true);
         }
-        if (currAnzUBoot < 4) {
+        if (currAnzUBoot < MAX_ANZAHL_UBOOT) {
             btn_ship4.setVisible(true);
         }
     }
@@ -341,15 +347,22 @@ public class mainControl {
             //umliegende Felder prüfen
             if (checkAdjacentFields(currShipCoords[i])) {
                 //ausrichtung des Schiffs prüfen
-                if (currShip.getDir() == -1) {
-                    currShipCoords[i].setStatus(ImageStatus.CURR_MITTE_HOR);
-                } else {
-                    currShipCoords[i].setStatus(ImageStatus.CURR_MITTE_VER);
-                }
+                if (i == 0){
+                    if (currShip.getDir() == -1
+                }else{
+                    if (currShip.getDir() == -1) {
+                        currShipCoords[i].setStatus(ImageStatus.CURR_MITTE_HOR);
+                    } else {
+                        currShipCoords[i].setStatus(ImageStatus.CURR_MITTE_VER);
+                    }
                 this.player_field.add(new ImageView(currShipCoords[i].getImage()), currShipCoords[i].getXKoord(), currShipCoords[i].getYKoord());
             } else {
                 shipCanBeSet = false;
-                currShipCoords[i].setStatus(ImageStatus.NOPE);
+                if (currShip.getDir() == -1){
+                    currShipCoords[i].setStatus(ImageStatus.NOPE_HOR);
+                }else{
+                    currShipCoords[i].setStatus(ImageStatus.NOPE_VER);
+                }
                 this.player_field.add(new ImageView(currShipCoords[i].getImage()), currShipCoords[i].getXKoord(), currShipCoords[i].getYKoord());
             }
         }
